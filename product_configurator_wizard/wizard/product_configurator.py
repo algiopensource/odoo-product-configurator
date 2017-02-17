@@ -20,6 +20,7 @@ class ProductConfigurator(models.TransientModel):
     _name = 'product.configurator'
     _inherits = {'product.config.session': 'config_session'}
 
+    config_session = fields.Many2one('product.config.session', required=True, ondelete="cascade")
     # Prefix for the dynamicly injected fields
     field_prefix = '__attribute-'
     custom_field_prefix = '__custom-'
@@ -460,7 +461,7 @@ class ProductConfigurator(models.TransientModel):
                         attr_depends[attr_field] |= set(
                             domain_line.value_ids.ids)
                     elif domain_line.condition == 'not in':
-                        val_ids = wiz.template_id.attribute_line_ids.filtered(
+                        val_ids = wiz.product_tmpl_id.attribute_line_ids.filtered(
                             lambda l: l.id == attr_id).value_ids
                         val_ids = val_ids - domain_line.value_ids
                         attr_depends[attr_field] |= set((val_ids))
@@ -780,6 +781,8 @@ class ProductConfigurator(models.TransientModel):
     @api.multi
     def action_config_done(self):
         """Parse values and execute final code before closing the wizard"""
+        result = {}
+        variant = False
         custom_vals = {
             l.attribute_id.id:
                 l.value or l.attachment_ids for l in self.custom_value_ids
@@ -790,29 +793,33 @@ class ProductConfigurator(models.TransientModel):
                 'attribute_value_ids': [(6, 0, self.value_ids.ids)],
                 'value_custom_ids': [(6, 0, custom_vals)]
             })
-            self.unlink()
-            return
-        try:
-            variant = self.product_tmpl_id.create_variant(
-                self.value_ids.ids, custom_vals)
-        except:
-            raise ValidationError(
-                _('Invalid configuration! Please check all '
-                  'required steps and fields.')
-            )
+        else:
+            try:
+                variant = self.product_tmpl_id.create_variant(
+                    self.value_ids.ids, custom_vals)
+            except:
+                raise ValidationError(
+                    _('Invalid configuration! Please check all '
+                      'required steps and fields.')
+                )
 
-        so = self.env['sale.order'].browse(self.env.context.get('active_id'))
+        if self.env.context.get('active_model'):
+            active_model = self.env[self.env.context['active_model']].browse(self.env.context['active_id'])
+            if hasattr(active_model, '_action_configurator_done'):
+                result = active_model._action_configurator_done(variant)
+                variant = False
 
-        so.write({
-            'order_line': [(0, 0, {
-                'product_id': variant.id,
-                'name': variant.display_name
-            })]
-        })
+        if variant:
+            result = {
+                'type': 'ir.actions.act_window',
+                'res_model': 'product.product',
+                'name': 'Product',
+                'view_mode': 'form',
+                'res_id': variant.id,
+            }
 
         self.unlink()
-        return
-
+        return result
 
 class ProductConfiguratorCustomValue(models.TransientModel):
     _name = 'product.configurator.custom.value'

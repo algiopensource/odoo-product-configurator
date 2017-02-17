@@ -38,3 +38,17 @@ class SaleOrderLine(models.Model):
             'target': 'new',
             'res_id': wizard.id,
         }
+
+class SaleOrder(models.Model):
+    _inherit = 'sale.order'
+
+    @api.multi
+    def _action_configurator_done(self, variant):
+        self.ensure_one()
+        self.write({
+            'order_line': [(0, 0, {
+                'product_id': variant.id,
+                'name': variant.display_name
+            })]
+        })
+        return {}
