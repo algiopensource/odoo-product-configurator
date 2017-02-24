@@ -19,7 +19,7 @@
                                     <tree>
                                         <field name="attribute_id"/>
                                         <field name="custom"/>
-                                        <field name="multi"/>
+                                        <field name="multi" invisible="True"/>
                                     </tree>
                                 </field>
                             </group>

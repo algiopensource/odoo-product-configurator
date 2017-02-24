@@ -1,0 +1,225 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* product_configurator_wizard
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-02-24 12:50+0000\n"
+"PO-Revision-Date: 2017-02-24 12:50+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: product_configurator_wizard
+#: code:addons/product_configurator_wizard/wizard/product_configurator.py:704
+#, python-format
+msgid "An error occursed while parsing value for attribute %s"
+msgstr "Un error ocurrió mientras se parseaba el valor para el atributo %s"
+
+#. module: product_configurator_wizard
+#: field:product.configurator.custom.value,attachment_ids:0
+msgid "Attachments"
+msgstr "Adjuntos"
+
+#. module: product_configurator_wizard
+#: field:product.configurator.custom.value,attribute_id:0
+msgid "Attribute"
+msgstr "Atributo"
+
+#. module: product_configurator_wizard
+#: field:product.configurator,attribute_line_ids:0
+msgid "Attributes"
+msgstr "Atributos"
+
+#. module: product_configurator_wizard
+#: view:product.configurator:product_configurator_wizard.product_configurator_form
+msgid "Back"
+msgstr "Atrás"
+
+#. module: product_configurator_wizard
+#: code:addons/product_configurator_wizard/wizard/product_configurator.py:83
+#, python-format
+msgid "Changing the product template while having an active configuration will erase reset/clear all values"
+msgstr "Cambiar la plantilla de producto mientras se tiene una configuración activa borrará o reseteará todos los valores"
+
+#. module: product_configurator_wizard
+#: field:product.configurator,config_session:0
+msgid "Config session"
+msgstr "Config sesión"
+
+#. module: product_configurator_wizard
+#: field:sale.order.line,config_ok:0
+msgid "Configurable"
+msgstr "Configurable"
+
+#. module: product_configurator_wizard
+#: field:product.configurator,product_tmpl_id:0
+msgid "Configurable Template"
+msgstr "Plantilla configurable"
+
+#. module: product_configurator_wizard
+#: field:product.configurator,config_step_ids:0
+msgid "Configuration Steps"
+msgstr "Pasos de configuración"
+
+#. module: product_configurator_wizard
+#: code:addons/product_configurator_wizard/wizard/product_configurator.py:72
+#, python-format
+msgid "Configure"
+msgstr "Configurar"
+
+#. module: product_configurator_wizard
+#: code:addons/product_configurator_wizard/wizard/product_configurator.py:750
+#: code:addons/product_configurator_wizard/wizard/product_configurator.py:801
+#: model:ir.actions.act_window,name:product_configurator_wizard.action_wizard_product_configurator
+#: view:sale.order:product_configurator_wizard.sale_order_form_config
+#, python-format
+msgid "Configure Product"
+msgstr "Configure el producto"
+
+#. module: product_configurator_wizard
+#: field:product.configurator,create_uid:0
+#: field:product.configurator.custom.value,create_uid:0
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: product_configurator_wizard
+#: field:product.configurator,create_date:0
+#: field:product.configurator.custom.value,create_date:0
+msgid "Created on"
+msgstr "Creado en"
+
+#. module: product_configurator_wizard
+#: field:product.configurator,custom_value_ids:0
+msgid "Custom Values"
+msgstr "Valores propios"
+
+#. module: product_configurator_wizard
+#: field:product.configurator,display_name:0
+#: field:product.configurator.custom.value,display_name:0
+msgid "Display Name"
+msgstr "Nombre mostrado"
+
+#. module: product_configurator_wizard
+#: field:product.configurator.custom.value,id:0
+msgid "ID"
+msgstr "ID"
+
+#. module: product_configurator_wizard
+#: code:addons/product_configurator_wizard/wizard/product_configurator.py:856
+#, python-format
+msgid "Invalid configuration! Please check all required steps and fields."
+msgstr "Configuración inválida! Por favor, revise todos los pasos y campos obligatorios."
+
+#. module: product_configurator_wizard
+#: field:product.configurator,__last_update:0
+#: field:product.configurator.custom.value,__last_update:0
+msgid "Last Modified on"
+msgstr "Última modificación el"
+
+#. module: product_configurator_wizard
+#: field:product.configurator,write_uid:0
+#: field:product.configurator.custom.value,write_uid:0
+msgid "Last Updated by"
+msgstr "Última actualización por"
+
+#. module: product_configurator_wizard
+#: field:product.configurator,write_date:0
+#: field:product.configurator.custom.value,write_date:0
+msgid "Last Updated on"
+msgstr "Última actualización el"
+
+#. module: product_configurator_wizard
+#: view:product.configurator:product_configurator_wizard.product_configurator_form
+msgid "Next"
+msgstr "Siguiente"
+
+#. module: product_configurator_wizard
+#: field:product.configurator,price:0
+msgid "Price"
+msgstr "Precio"
+
+#. module: product_configurator_wizard
+#: code:addons/product_configurator_wizard/wizard/product_configurator.py:870
+#, python-format
+msgid "Product"
+msgstr "Producto"
+
+#. module: product_configurator_wizard
+#: view:product.configurator:product_configurator_wizard.product_configurator_form
+msgid "Product Configurator"
+msgstr "Configurador de producto"
+
+#. module: product_configurator_wizard
+#: field:product.configurator,product_id:0
+msgid "Product Variant"
+msgstr "Variante de producto"
+
+#. module: product_configurator_wizard
+#: field:product.configurator,product_img:0
+msgid "Product img"
+msgstr "imagen de producto"
+
+#. module: product_configurator_wizard
+#: view:sale.order:product_configurator_wizard.sale_order_form_config
+msgid "Reconfigure"
+msgstr "Reconfigurar"
+
+#. module: product_configurator_wizard
+#: model:ir.model,name:product_configurator_wizard.model_sale_order
+msgid "Sales Order"
+msgstr "Pedido de venta"
+
+#. module: product_configurator_wizard
+#: model:ir.model,name:product_configurator_wizard.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Línea pedido de venta"
+
+#. module: product_configurator_wizard
+#: code:addons/product_configurator_wizard/wizard/product_configurator.py:53
+#, python-format
+msgid "Select Template"
+msgstr "Seleccione la plantilla"
+
+#. module: product_configurator_wizard
+#: help:product.configurator,product_id:0
+msgid "Set only when re-configuring a existing variant"
+msgstr "Asigne solo cuando se reconfigure una variante existente"
+
+#. module: product_configurator_wizard
+#: field:product.configurator,state:0
+msgid "State"
+msgstr "Estado"
+
+#. module: product_configurator_wizard
+#: code:addons/product_configurator_wizard/wizard/product_configurator.py:453
+#, python-format
+msgid "There was a problem rendering the view (dynamic_form not found)"
+msgstr "Hubo un problema renderizando la vista (no se encontró el dynamic_form)"
+
+#. module: product_configurator_wizard
+#: field:product.configurator,user_id:0
+#: field:product.configurator.custom.value,user_id:0
+msgid "User"
+msgstr "Usuario"
+
+#. module: product_configurator_wizard
+#: field:product.configurator.custom.value,value:0
+msgid "Value"
+msgstr "Valor"
+
+#. module: product_configurator_wizard
+#: field:product.configurator,value_ids:0
+msgid "Value ids"
+msgstr "ids de Valor"
+
+#. module: product_configurator_wizard
+#: field:product.configurator.custom.value,wizard_id:0
+msgid "Wizard"
+msgstr "Wizard"
+
