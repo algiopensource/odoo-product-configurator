@@ -50,7 +50,7 @@ class ProductConfigurator(models.TransientModel):
         configuration steps set on the product.template via
         config_step_line_ids"""
 
-        steps = [('select', "Select Template")]
+        steps = [('select', _('Select Template'))]
 
         # Get the wizard id from context set via action_next_step method
         wizard_id = self.env.context.get('wizard_id')
@@ -69,7 +69,7 @@ class ProductConfigurator(models.TransientModel):
             )
             steps = open_steps if wiz.product_id else steps + open_steps
         else:
-            steps.append(('configure', 'Configure'))
+            steps.append(('configure', _('Configure')))
         return steps
 
     @api.onchange('product_tmpl_id')
@@ -747,7 +747,7 @@ class ProductConfigurator(models.TransientModel):
         wizard_action = {
             'type': 'ir.actions.act_window',
             'res_model': self._name,
-            'name': "Configure Product",
+            'name': _('Configure Product'),
             'view_mode': 'form',
             'context': dict(
                 self.env.context,
@@ -798,7 +798,7 @@ class ProductConfigurator(models.TransientModel):
         wizard_action = {
             'type': 'ir.actions.act_window',
             'res_model': self._name,
-            'name': "Configure Product",
+            'name': _('Configure Product'),
             'view_mode': 'form',
             'context': dict(
                 self.env.context,
@@ -867,7 +867,7 @@ class ProductConfigurator(models.TransientModel):
             result = {
                 'type': 'ir.actions.act_window',
                 'res_model': 'product.product',
-                'name': 'Product',
+                'name': _('Product'),
                 'view_mode': 'form',
                 'res_id': variant.id,
             }

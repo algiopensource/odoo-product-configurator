@@ -71,15 +71,15 @@ class ProductConfigDomainLine(models.Model):
 
     def _get_domain_conditions(self):
         operators = [
-            ('in', 'In'),
-            ('not in', 'Not In')
+            ('in', _('In')),
+            ('not in', _('Not In'))
         ]
 
         return operators
 
     def _get_domain_operators(self):
         andor = [
-            ('and', 'And'),
+            ('and', _('And')),
             # ('or', 'Or')
             # TODO: Not implemented in domain computation yet
         ]
