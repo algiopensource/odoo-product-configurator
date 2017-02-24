@@ -8,6 +8,11 @@ from openerp.addons.base.ir.ir_model import _get_fields_type
 from openerp import models, fields, api, _
 from openerp.exceptions import Warning, ValidationError
 
+import logging
+
+_logger = logging.getLogger(__name__)
+
+
 
 class FreeSelection(fields.Selection):
 
@@ -79,6 +84,33 @@ class ProductConfigurator(models.TransientModel):
                   'configuration will erase reset/clear all values')
             )
 
+    def is_valid_restriction (self, restric_id, values):
+        # Ver si se cumple una restriccion
+        # Tenemos restric_id la restriccion: product_config_line
+        # product_config_domain
+        # product_config_domain_line
+        # valores a revisar: product_config_domain_line_attr_rel
+        domains = restric_id.domain_id.compute_domain()
+        
+        for domain in domains:
+            field_name = self.field_prefix + str(domain[0])
+            if field_name not in values:
+                _logger.info('%s es falso  no existe %s' %(restric_id,field_name))
+                return False
+            vals = values[field_name]
+            if isinstance(vals, (int,long)):
+                vals = [vals]
+            
+            if domain[1] == 'in':
+                """ si en domain[2] no hay nada que este en vals, no se cumple
+                """
+                if not set(domain[2]) & set(vals):
+                    return False
+            else:
+                if set(domain[2]) & set(vals):
+                    return False
+        return True
+    
     def get_onchange_domains(self, values, cfg_val_ids):
         """Generate domains to be returned by onchange method in order
         to restrict the availble values of dynamically inserted fields
@@ -89,7 +121,7 @@ class ProductConfigurator(models.TransientModel):
 
         :returns: a dictionary of domains returned by onchance method
         """
-        domains = {}
+        domains = {} 
         for line in self.product_tmpl_id.attribute_line_ids.sorted():
             field_name = self.field_prefix + str(line.attribute_id.id)
 
@@ -106,12 +138,34 @@ class ProductConfigurator(models.TransientModel):
                 domains[field_name][0][2].append(custom_val.id)
                 if line.multi and vals and custom_val.id in vals[0][2]:
                     continue
-            for value in line.value_ids:
-                # Add ids sequentially to domain is they are valid options
-                if self.product_tmpl_id.value_available(value.id, cfg_val_ids):
+
+            #buscar las restricciones para este atributo
+            #si hay restricciones sacar los valores de estas que se cumplan
+            #si no hay restricciones sacar todos
+            
+            config_lines = self.product_tmpl_id.config_line_ids
+            attribute = line.attribute_id #el atributo que estamos recorriendo
+            template = self.product_tmpl_id
+            atributes_on_config_lines = config_lines.mapped('attribute_line_id.attribute_id')
+            
+            restrictions_valid = False
+            if attribute in atributes_on_config_lines:
+                filtered_restrictions = config_lines.filtered(lambda l: 
+                                                              l.attribute_line_id.attribute_id == attribute 
+                                                              and l.product_tmpl_id == template)
+                for restric in filtered_restrictions:
+                # por cada restriccion, comprobar si se cumple.
+                # si se cumple alguna sacar los valores de esa restriccion (de todas las que se cumplan)
+                # si no se cumple ninguna sacar todos los valores de ese atributo
+                    if self.is_valid_restriction(restric, values):
+                        restrictions_valid = True
+                        for v in restric.value_ids:
+                            domains[field_name][0][2].append(v.id)
+            if restrictions_valid == False:
+                for value in line.value_ids:
                     domains[field_name][0][2].append(value.id)
         return domains
-
+    
     def get_form_vals(self, dynamic_fields, domains):
         """Generate a dictionary to return new values via onchange method.
         Domains hold the values available, this method enforces these values
