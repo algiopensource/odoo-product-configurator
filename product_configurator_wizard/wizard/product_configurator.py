@@ -763,7 +763,7 @@ class ProductConfigurator(models.TransientModel):
         cfg_step_lines = self.product_tmpl_id.config_step_line_ids
 
         if not cfg_step_lines:
-            if self.value_ids:
+            if self.value_ids or self.custom_value_ids:
                 return self.action_config_done()
             else:
                 self.state = 'configure'
