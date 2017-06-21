@@ -21,7 +21,7 @@
     'author': 'Pledra',
     'license': 'AGPL-3',
     'website': 'http://www.pledra.com/',
-    'depends': ['sale_stock'],
+    'depends': ['sale_stock','product'],
     "data": [
         'data/menu_configurable_product.xml',
         'data/product_attribute.xml',
