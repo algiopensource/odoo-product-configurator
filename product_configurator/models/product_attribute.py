@@ -2,6 +2,7 @@
 
 from openerp import models, fields, api, _
 from openerp.exceptions import ValidationError
+from ast import literal_eval
 
 # TODO: Implement a default attribute value field/method to load up on wizard
 
@@ -106,6 +107,32 @@ class ProductAttribute(models.Model):
                 _("Selected custom field type '%s' is not searchable" %
                   self.custom_type)
             )
+
+
+    def validate_custom_val(self, val):
+        """ Pass in a desired custom value and ensure it is valid.
+        Probaly should check type, etc, but let's assume fine for the moment.
+        """
+        self.ensure_one()
+        if self.custom_type in ('int', 'float'):
+            minv = self.min_val
+            maxv = self.max_val
+            val = literal_eval(val)
+            if minv and maxv and (val < minv or val > maxv):
+                raise ValidationError(
+                    _("Selected custom value '%s' must be between %s and %s"
+                        % (self.name, self.min_val, self.max_val))
+                )
+            elif minv and val < minv:
+                raise ValidationError(
+                    _("Selected custom value '%s' must be at least %s" %
+                        (self.name, self.min_val))
+                )
+            elif maxv and val > maxv:
+                raise ValidationError(
+                    _("Selected custom value '%s' must be lower than %s" %
+                        (self.name, self.max_val + 1))
+                )
 
 
 class ProductAttributeLine(models.Model):

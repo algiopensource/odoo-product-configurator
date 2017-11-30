@@ -39,6 +39,16 @@ class SaleOrderLine(models.Model):
             'res_id': wizard.id,
         }
 
+    @api.multi
+    def _action_configurator_done(self, variant):
+        self.ensure_one()
+        self.write({
+            'product_id': variant.id,
+            'name': variant.display_name
+        })
+        return {}
+
+
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
