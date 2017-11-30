@@ -687,11 +687,13 @@ class ProductConfigurator(models.TransientModel):
             field_name = self.field_prefix + str(attr_id)
             custom_field_name = self.custom_field_prefix + str(attr_id)
 
-            if field_name not in vals:
+            if field_name not in vals and custom_field_name not in vals:
                 continue
 
             # Add attribute values from the client except custom attribute
-            if vals[field_name] != custom_val.id:
+            # If a custom value is being written, but field name is not in
+            #   the write dictionary, then it must be a custom value!
+            if vals.get(field_name, custom_val.id) != custom_val.id:
                 if attr_line.multi and isinstance(vals[field_name], list):
                     if not vals[field_name]:
                         field_val = None
@@ -707,8 +709,12 @@ class ProductConfigurator(models.TransientModel):
                 attr_val_dict.update({
                     attr_id: field_val
                 })
+                # Ensure there is no custom value stored if we have switched
+                # from custom value to selected attribute value.
+                if attr_line.custom:
+                    custom_val_dict.update({attr_id: False})
             elif attr_line.custom:
-                val = vals[custom_field_name]
+                val = vals.get(custom_field_name, False)
                 if attr_line.attribute_id.custom_type == 'binary':
                     # TODO: Add widget that enables multiple file uploads
                     val = [{
@@ -718,9 +724,13 @@ class ProductConfigurator(models.TransientModel):
                 custom_val_dict.update({
                     attr_id: val
                 })
+                # Ensure there is no standard value stored if we have switched
+                # from selected value to custom value.
+                attr_val_dict.update({attr_id: False})
 
             # Remove dynamic field from value list to prevent error
-            del vals[field_name]
+            if field_name in vals:
+                del vals[field_name]
             if custom_field_name in vals:
                 del vals[custom_field_name]
 
@@ -838,26 +848,29 @@ class ProductConfigurator(models.TransientModel):
         """Parse values and execute final code before closing the wizard"""
         result = {}
         variant = False
+
         custom_vals = {
             l.attribute_id.id:
                 l.value or l.attachment_ids for l in self.custom_value_ids
         }
 
-        if self.product_id:
-            self.product_id.write({
-                'attribute_value_ids': [(6, 0, self.value_ids.ids)],
-                'value_custom_ids': [(6, 0, custom_vals)]
-            })
-        else:
-            try:
-                variant = self.product_tmpl_id.create_variant(
-                    self.value_ids.ids, custom_vals)
-            except:
-                raise ValidationError(
-                    _('Invalid configuration! Please check all '
-                      'required steps and fields.')
-                )
-
+        # This try except is too generic.
+        # The create_variant routine could effectively fail for
+        # a large number of reasons, including bad programming.
+        # It should be refactored.
+        # In the meantime, at least make sure that a validation
+        # error legitimately raised in a nested routine
+        # is passed through.
+        try:
+            variant = self.product_tmpl_id.create_get_variant(
+                self.value_ids.ids, custom_vals)
+        except ValidationError:
+            raise
+        except:
+            raise ValidationError(
+                _('Invalid configuration! Please check all '
+                  'required steps and fields.')
+            )
         if self.env.context.get('active_model'):
             active_model = self.env[self.env.context['active_model']].browse(self.env.context['active_id'])
             if hasattr(active_model, '_action_configurator_done'):
