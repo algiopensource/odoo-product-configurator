@@ -8,7 +8,8 @@ class SaleOrderLine(models.Model):
 
     config_ok = fields.Boolean(
         related='product_id.config_ok',
-        string="Configurable"
+        string="Configurable",
+        readonly=True
     )
 
     @api.multi
@@ -23,7 +24,8 @@ class SaleOrderLine(models.Model):
         wizard_obj = self.env['product.configurator']
         wizard = wizard_obj.create({
             'product_id': self.product_id.id,
-            'state': active_step
+            'state': active_step,
+            'order_line_id': self.id,
         })
 
         return {
