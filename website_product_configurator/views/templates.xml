@@ -20,6 +20,12 @@
       </xpath>
   </template>
 
+  <template id="assets_editor" inherit_id="website.assets_editor" name="Product Configurator Editor" groups="base.group_sale_manager">
+  <xpath expr="." position="inside">
+      <script type="text/javascript" src="/website_product_configurator/static/src/js/website_product_config_tour_configure.js"></script>
+  </xpath>
+</template>
+
 <template id="product_items" name="Product item">
   <div itemscope="itemscope" itemtype="http://schema.org/Product">
   <div class="ribbon-wrapper">
@@ -200,6 +206,13 @@
             <div class="oe_structure"/>
             <div class="container mb32">
             <div class="row mt8">
+              <div class="col-xs-12">
+                <t t-call="website.publish_management" groups="sales_team.group_sale_manager">
+                    <t t-set="object" t-value="product_tmpl" />
+                    <t t-set="publish_edit" t-value="True" />
+                    <t t-set="action" t-value="'product.product_template_action'" />
+                </t>
+              </div>
               <!-- <div class="col-sm-4">
                   <ol class="breadcrumb">
                       <li><a t-att-href="keep(category=0)" onclick="history.go(-1); return false;">Products</a></li>

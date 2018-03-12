@@ -185,7 +185,7 @@ class ProductConfigurator(models.TransientModel):
             if not v:
                 continue
             if isinstance(v, list):
-                view_val_ids &= set(v[0][2])
+                view_val_ids |= set(v[0][2])
             elif isinstance(v, int):
                 view_val_ids.add(v)
 
@@ -460,10 +460,10 @@ class ProductConfigurator(models.TransientModel):
                         attr_depends[attr_field] |= set(
                             domain_line.value_ids.ids)
                     elif domain_line.condition == 'not in':
-                        val_ids = wiz.template_id.attribute_line_ids.filtered(
+                        val_ids = wiz.product_tmpl_id.attribute_line_ids.filtered(
                             lambda l: l.id == attr_id).value_ids
                         val_ids = val_ids - domain_line.value_ids
-                        attr_depends[attr_field] |= set((val_ids))
+                        attr_depends[attr_field] |= set(val_ids.ids)
 
                 for dependee_field, val_ids in attr_depends.iteritems():
                     if not val_ids:
@@ -652,8 +652,12 @@ class ProductConfigurator(models.TransientModel):
                 attr_val_dict.update({
                     attr_id: field_val
                 })
+                # Ensure there is no custom value stored if we have switched
+                # from custom value to selected attribute value.
+                if attr_line.custom:
+                    custom_val_dict.update({attr_id: False})
             elif attr_line.custom:
-                val = vals[custom_field_name]
+                val = vals.get(custom_field_name, False)
                 if attr_line.attribute_id.custom_type == 'binary':
                     # TODO: Add widget that enables multiple file uploads
                     val = [{
@@ -663,6 +667,9 @@ class ProductConfigurator(models.TransientModel):
                 custom_val_dict.update({
                     attr_id: val
                 })
+                # Ensure there is no standard value stored if we have switched
+                # from selected value to custom value.
+                attr_val_dict.update({attr_id: False})
 
             # Remove dynamic field from value list to prevent error
             del vals[field_name]
