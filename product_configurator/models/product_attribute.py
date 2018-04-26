@@ -188,6 +188,28 @@ class ProductAttributeValue(models.Model):
         comodel_name='product.product',
         string='Related Product'
     )
+    
+#     @api.multi
+#     def name_get(self):
+#         if not self.env.context.get('show_attribute', True):
+#             return super(ProductAttributeValue, self).name_get()
+#         res = []
+#         
+#         if self.env.context.get('params', False) \
+#                 and self.env.context.get('params', False).get('model',False) \
+#                  and self.env.context.get('params', False).get('id',False) \
+#                 and self.env.context['params']['model']=='product.product':
+#             product = self.env['product.product'].browse(self.env.context['params']['id'])
+#             if product:
+#                 for att in product.attribute_line_ids:
+#                     for v in product.attribute_value_ids:
+#                         if v.attribute_id == att.attribute_id:
+#                             res.append([v.id, "%s: %s" % (v.attribute_id.name, v.name)])
+#                             break
+#         else:
+#             for value in self:
+#                 res.append([value.id, "%s: %s" % (value.attribute_id.name, value.name)])
+#         return res
 
     @api.model
     def name_search(self, name='', args=None, operator='ilike', limit=100):
@@ -281,3 +303,4 @@ class ProductAttributeValueCustom(models.Model):
         ('attr_uniq', 'unique(product_id, attribute_id)',
          'Cannot have two custom values for the same attribute')
     ]
+
