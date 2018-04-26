@@ -31,6 +31,8 @@ class ProductTemplate(models.Model):
         string='Configuration Lines'
     )
 
+    attribute_line_ids = fields.One2many('product.attribute.line', 'product_tmpl_id', 'Product Attributes', copy=True)
+
     def flatten_val_ids(self, value_ids):
         """ Return a list of value_ids from a list with a mix of ids
         and list of ids (multiselection)
@@ -344,6 +346,26 @@ class ProductTemplate(models.Model):
             :param custom_values: dict {product.attribute.id: custom_value}
             :returns: new/existing product.product recordset
         """
+
+#############################################################################################################################
+        for k,v  in custom_values.items():
+            att = k
+            attv = v
+            pav = self.env['product.attribute.value'].search([('attribute_id','=',att),('name','=',attv)])
+            if not pav:
+                ctx = self.env.context.copy()
+                ctx.pop('active_id', False)
+                ctx.pop('active_ids', False)
+                pav = self.env['product.attribute.value'].with_context(ctx).create({'attribute_id':att,
+                                                              'name':attv,
+                                                              'attribute_code':attv})
+                pal = self.env['product.attribute.line'].search([('attribute_id', '=', att),('product_tmpl_id','=',self.id)])
+                pal.update({'value_ids': [4, pav.id]})
+            value_ids.append(pav.id)
+
+        custom_values = {}
+##############################################################################################################################
+
         if custom_values is None:
             custom_values = {}
         valid = self.validate_configuration(value_ids, custom_values)
@@ -669,3 +691,5 @@ class ProductProduct(models.Model):
                 product.config_name = product.get_config_name()
             else:
                 product.config_name = product.name
+
+
