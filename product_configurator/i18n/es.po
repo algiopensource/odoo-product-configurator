@@ -1,13 +1,13 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* product_configurator
+#   * product_configurator
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-24 10:44+0000\n"
-"PO-Revision-Date: 2017-02-24 10:44+0000\n"
+"POT-Creation-Date: 2018-04-27 11:09+0000\n"
+"PO-Revision-Date: 2018-04-27 11:09+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -49,8 +49,21 @@ msgid "Attachment"
 msgstr "Adjunto"
 
 #. module: product_configurator
+#: field:product.attribute,attachment_ids:0
+#: field:product.attribute.line,attachment_ids:0
+#: field:product.attribute.value,attachment_ids:0
 #: field:product.attribute.value.custom,attachment_ids:0
+#: field:product.config.domain,attachment_ids:0
+#: field:product.config.domain.line,attachment_ids:0
+#: field:product.config.image,attachment_ids:0
+#: field:product.config.line,attachment_ids:0
+#: field:product.config.session,attachment_ids:0
 #: field:product.config.session.custom.value,attachment_ids:0
+#: field:product.config.step,attachment_ids:0
+#: field:product.config.step.line,attachment_ids:0
+#: field:product.product,attachment_product_product_ids:0
+#: field:product.template,attachment_ids:0
+#: field:sale.order.line,attachment_ids:0
 msgid "Attachments"
 msgstr "Adjuntos"
 
@@ -99,6 +112,11 @@ msgstr "El tipo propio del atributo es binario, los adjuntos son los únicos val
 #, python-format
 msgid "Attribute custom type must be 'binary' for saving attachments to custom value"
 msgstr "El tipo propio del atributo debe ser binario para guardar adjuntos en el valor propio"
+
+#. module: product_configurator
+#: field:product.product,attribute_value_ordered_text:0
+msgid "Attribute value ordered text"
+msgstr "Atributos de variante"
 
 #. module: product_configurator
 #: help:product.attribute.value,active:0
@@ -234,7 +252,7 @@ msgid "Configured Variants"
 msgstr "Variantes configuradas"
 
 #. module: product_configurator
-#: code:addons/product_configurator/models/product.py:491
+#: code:addons/product_configurator/models/product.py:608
 #, python-format
 msgid "Could not convert custom value '%s' to '%s' on product variant: '%s'"
 msgstr "No se puedo convertir el valor propio '%s' a '%s' en la variante de producto: '%s'"
@@ -388,7 +406,7 @@ msgid "Integer"
 msgstr "Entero"
 
 #. module: product_configurator
-#: code:addons/product_configurator/models/product.py:331
+#: code:addons/product_configurator/models/product.py:374
 #: code:addons/product_configurator/models/product_config.py:438
 #, python-format
 msgid "Invalid Configuration"
@@ -577,10 +595,28 @@ msgid "Searchable"
 msgstr "Buscable"
 
 #. module: product_configurator
-#: code:addons/product_configurator/models/product_attribute.py:106
+#: code:addons/product_configurator/models/product_attribute.py:107
 #, python-format
 msgid "Selected custom field type '%s' is not searchable"
 msgstr "El tipo de campo propio seleccionado '%s' no es buscable"
+
+#. module: product_configurator
+#: code:addons/product_configurator/models/product_attribute.py:129
+#, python-format
+msgid "Selected custom value '%s' must be at least %s"
+msgstr "Selected custom value '%s' must be at least %s"
+
+#. module: product_configurator
+#: code:addons/product_configurator/models/product_attribute.py:124
+#, python-format
+msgid "Selected custom value '%s' must be between %s and %s"
+msgstr "Selected custom value '%s' must be between %s and %s"
+
+#. module: product_configurator
+#: code:addons/product_configurator/models/product_attribute.py:134
+#, python-format
+msgid "Selected custom value '%s' must be lower than %s"
+msgstr "Selected custom value '%s' must be lower than %s"
 
 #. module: product_configurator
 #: field:product.attribute,sequence:0
@@ -663,5 +699,4 @@ msgstr "Los valores introducidos para la línea '%s' generan una configuración 
 #: help:product.attribute,search_ok:0
 msgid "When checking for variants with the same configuration, do we include this field in the search?"
 msgstr "Cuando se comprueba para variantes con la misma configuración, ¿incluímos este campo en la búsqueda?"
-
 
