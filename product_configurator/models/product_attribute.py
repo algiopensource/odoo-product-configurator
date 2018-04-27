@@ -188,7 +188,7 @@ class ProductAttributeValue(models.Model):
         comodel_name='product.product',
         string='Related Product'
     )
-    
+
 #     @api.multi
 #     def name_get(self):
 #         if not self.env.context.get('show_attribute', True):

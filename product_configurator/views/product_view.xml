@@ -112,17 +112,48 @@
         <field name="model">product.product</field>
         <field name="inherit_id" ref="product.product_normal_form_view"/>
         <field name="arch" type="xml">
-            <xpath expr="//notebook" position="inside">
+            <xpath expr="//field[@name='attribute_value_ids']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <field name='attribute_value_ids' position="after">
+                <field name="attribute_value_ordered_text"/>
+            </field>
+            <!-- <xpath expr="//notebook" position="inside">
                 <page string="Custom Values">
                     <field name="value_custom_ids"/>
-<!--                         <tree string="Custom Values" editable="bottom">
+                        <tree string="Custom Values" editable="bottom">
                             <field name="attribute_id" string="Attribute"/>
                             <field name="value"/>
                             <field name="attachment_ids"/>
                         </tree>
-                    </field> -->
+                    </field>
                 </page>
+            </xpath> -->
+        </field>
+    </record>
+
+    <record id="product_configurator_tree_view_inherit2" model="ir.ui.view">
+        <field name="name">product.configurator.tree.view.inherit</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_product_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='attribute_value_ids']" position="attributes">
+                <attribute name="invisible">1</attribute>
             </xpath>
+            <field name='attribute_value_ids' position="after">
+                <field name="attribute_value_ordered_text"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="product_configurator_tree_view_inherit" model="ir.ui.view">
+        <field name="name">product.configurator.tree.view.inherit</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_search_form_view"/>
+        <field name="arch" type="xml">
+            <field name='attribute_value_ids' position="after">
+                <field name="attribute_value_ordered_text"/>
+            </field>
         </field>
     </record>
 

@@ -6,6 +6,7 @@ from openerp.report.report_sxw import rml_parse
 from openerp.exceptions import ValidationError
 from openerp import models, fields, api, tools, _
 from openerp.addons import decimal_precision as dp
+from _cffi_backend import string
 
 
 class ProductTemplate(models.Model):
@@ -631,6 +632,21 @@ class ProductProduct(models.Model):
         help="This is the sum of the extra price of all attributes",
         digits_compute=dp.get_precision('Product Price')
     )
+
+    attribute_value_ordered_text=fields.Text(compute='_compute_attribute_value_ordered_text', string='Attributes')
+    
+    @api.multi
+    def _compute_attribute_value_ordered_text(self):
+        for product in self:
+            val = ''
+            for att in product.attribute_line_ids:
+                for v in product.attribute_value_ids:
+                    if v.attribute_id == att.attribute_id:
+                        val +=  "%s: %s, " % (v.attribute_id.name, v.name)
+                        break
+            if len(val)>1:
+                val=val[:-2]
+            product.attribute_value_ordered_text = val
 
     @api.multi
     def _check_attribute_value_ids(self):
