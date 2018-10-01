@@ -504,7 +504,7 @@ class ProductTemplate(models.Model):
             if attr.id in custom_vals:
                 attr.validate_custom_val(custom_vals[attr.id])
             if final:
-                common_vals = set(value_ids) & set(line.value_ids.ids)
+                common_vals = set(value_ids + line.value_ids.ids)
                 custom_val = custom_vals.get(attr.id)
                 if line.required and not common_vals and not custom_val:
                     # TODO: Verify custom value type to be correct
