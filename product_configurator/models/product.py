@@ -349,10 +349,15 @@ class ProductTemplate(models.Model):
         """
 
 #############################################################################################################################
+        print custom_values.items()
         for k,v  in custom_values.items():
+            print '--'
+            print k
+            print v
             att = k
             attv = v
             pav = self.env['product.attribute.value'].search([('attribute_id','=',att),('name','=',attv)])
+            print pav
             if not pav:
                 ctx = self.env.context.copy()
                 ctx.pop('active_id', False)
@@ -362,6 +367,11 @@ class ProductTemplate(models.Model):
                                                               'attribute_code':attv})
                 pal = self.env['product.attribute.line'].search([('attribute_id', '=', att),('product_tmpl_id','=',self.id)])
                 pal.update({'value_ids': [4, pav.id]})
+            elif pav.attribute_code == '[]' and not attv=='[]':
+                pav.write({'attribute_code':attv})
+                pal = self.env['product.attribute.line'].search([('attribute_id', '=', att),('product_tmpl_id','=',self.id)])
+                pal.update({'value_ids': [4, pav.id]})
+
             value_ids.append(pav.id)
 
         custom_values = {}
@@ -371,6 +381,7 @@ class ProductTemplate(models.Model):
             custom_values = {}
         valid = self.validate_configuration(value_ids, custom_values)
         if not valid:
+            print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
             raise ValidationError(_('Invalid Configuration'))
 
         duplicates = self.search_variant(value_ids,
@@ -484,6 +495,9 @@ class ProductTemplate(models.Model):
 
     @api.multi
     def validate_configuration(self, value_ids, custom_vals=None, final=True):
+        print '====================='
+        print value_ids
+        print custom_vals
         """ Verifies if the configuration values passed via value_ids and custom_vals
         are valid
         :param value_ids: list of attribute value ids
@@ -504,7 +518,7 @@ class ProductTemplate(models.Model):
             if attr.id in custom_vals:
                 attr.validate_custom_val(custom_vals[attr.id])
             if final:
-                common_vals = set(value_ids + line.value_ids.ids)
+                common_vals = set(value_ids) & set(line.value_ids.ids)
                 custom_val = custom_vals.get(attr.id)
                 if line.required and not common_vals and not custom_val:
                     # TODO: Verify custom value type to be correct
