@@ -233,13 +233,13 @@ class ProductTemplate(models.Model):
         ])
 
         for attr_id, value in custom_values.iteritems():
-            #if attr_id not in attr_search.ids:
+            # if attr_id not in attr_search.ids:
             #    domain.append(
             #        ('value_custom_ids.attribute_id', '!=', int(attr_id)))
-            #else:
-                domain.append(
-                    ('value_custom_ids.attribute_id', '=', int(attr_id)))
-                domain.append(('value_custom_ids.value', '=', value))
+            # else:
+            domain.append(
+                ('value_custom_ids.attribute_id', '=', int(attr_id)))
+            domain.append(('value_custom_ids.value', '=', value))
 
         products = self.env['product.product'].search(domain)
 
@@ -250,10 +250,9 @@ class ProductTemplate(models.Model):
             lambda p:
             len(p.attribute_value_ids) != len(value_ids) or
             len(p.value_custom_ids) != len(custom_values)
-            )
+        )
         products -= more_attrs
         return products
-    
 
     def get_config_image_obj(self, value_ids, size=None):
         """
@@ -275,7 +274,6 @@ class ProductTemplate(models.Model):
                 img_obj = line
                 max_matches = matches
         return img_obj
-
 
     @api.multi
     def encode_custom_values(self, custom_values):
@@ -348,24 +346,31 @@ class ProductTemplate(models.Model):
             :returns: new/existing product.product recordset
         """
 
-#############################################################################################################################
-        for k,v  in custom_values.items():
+        #############################################################################################################################
+        for k, v in custom_values.items():
             att = k
             attv = v
-            pav = self.env['product.attribute.value'].search([('attribute_id','=',att),('name','=',attv)])
+            pav = self.env['product.attribute.value'].search([('attribute_id', '=', att), ('name', '=', attv)])
             if not pav:
                 ctx = self.env.context.copy()
                 ctx.pop('active_id', False)
                 ctx.pop('active_ids', False)
-                pav = self.env['product.attribute.value'].with_context(ctx).create({'attribute_id':att,
-                                                              'name':attv,
-                                                              'attribute_code':attv})
-                pal = self.env['product.attribute.line'].search([('attribute_id', '=', att),('product_tmpl_id','=',self.id)])
+                pav = self.env['product.attribute.value'].with_context(ctx).create({'attribute_id': att,
+                                                                                    'name': attv,
+                                                                                    'attribute_code': attv})
+                pal = self.env['product.attribute.line'].search(
+                    [('attribute_id', '=', att), ('product_tmpl_id', '=', self.id)])
                 pal.update({'value_ids': [4, pav.id]})
+            elif pav.attribute_code == '[]' and not attv == '[]':
+                pav.write({'attribute_code': attv})
+                pal = self.env['product.attribute.line'].search(
+                    [('attribute_id', '=', att), ('product_tmpl_id', '=', self.id)])
+                pal.update({'value_ids': [4, pav.id]})
+
             value_ids.append(pav.id)
 
         custom_values = {}
-##############################################################################################################################
+        ##############################################################################################################################
 
         if custom_values is None:
             custom_values = {}
@@ -393,7 +398,6 @@ class ProductTemplate(models.Model):
         variant = self.env['product.product'].create(vals)
 
         return variant
-
 
     # TODO: Refactor so multiple values can be checked at once
     # also a better method for building the domain using the logical
@@ -426,7 +430,6 @@ class ProductTemplate(models.Model):
                     return False
         return True
 
-
     def validate_domains_against_sels(self, domains, sel_val_ids):
         # process domains as shown in this wikipedia pseudocode:
         # https://en.wikipedia.org/wiki/Polish_notation#Order_of_operations
@@ -456,7 +459,7 @@ class ProductTemplate(models.Model):
         while stack:
             avail &= stack.pop()
         return avail
-    
+
     @api.multi
     def values_available(self, attr_val_ids, sel_val_ids):
         """Determines whether the attr_values from the product_template
@@ -526,9 +529,23 @@ class ProductTemplate(models.Model):
         mono_attr_lines = self.attribute_line_ids.filtered(
             lambda l: not l.multi)
 
+        ids_verifed = []
         for line in mono_attr_lines:
+            # En caso de valor repetido verificar si ya se verifico, existen valores asignados a dos lineas diferentes
             if len(set(line.value_ids.ids) & set(value_ids)) > 1:
-                return False
+                returned = False
+                set_ids = set(line.value_ids.ids) & set(value_ids)
+                for value_id in value_ids:
+                    set_ids_to_check = [value_id]
+                    if len(set(line.value_ids.ids) & set(set_ids_to_check)) >= 1 and \
+                            value_id in ids_verifed:
+                        returned = True
+                    elif len(set(line.value_ids.ids) & set(set_ids_to_check)) >= 1:
+                        returned = returned or False
+                        ids_verifed.append(value_id)
+                return returned
+            elif len(set(line.value_ids.ids) & set(value_ids)) == 1:
+                ids_verifed.append((set(line.value_ids.ids) & set(value_ids)).pop())
         return True
 
     @api.multi
@@ -633,8 +650,8 @@ class ProductProduct(models.Model):
         digits_compute=dp.get_precision('Product Price')
     )
 
-    attribute_value_ordered_text=fields.Text(compute='_compute_attribute_value_ordered_text', string='Attributes')
-    
+    attribute_value_ordered_text = fields.Text(compute='_compute_attribute_value_ordered_text', string='Attributes')
+
     @api.multi
     def _compute_attribute_value_ordered_text(self):
         for product in self:
@@ -642,10 +659,10 @@ class ProductProduct(models.Model):
             for att in product.attribute_line_ids:
                 for v in product.attribute_value_ids:
                     if v.attribute_id == att.attribute_id:
-                        val +=  "%s: %s, " % (v.attribute_id.name, v.name)
+                        val += "%s: %s, " % (v.attribute_id.name, v.name)
                         break
-            if len(val)>1:
-                val=val[:-2]
+            if len(val) > 1:
+                val = val[:-2]
             product.attribute_value_ordered_text = val
 
     @api.multi
