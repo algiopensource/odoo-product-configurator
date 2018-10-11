@@ -346,11 +346,12 @@ class ProductTemplate(models.Model):
             :returns: new/existing product.product recordset
         """
 
-        #############################################################################################################################
+#############################################################################################################################
         for k, v in custom_values.items():
             att = k
             attv = v
             pav = self.env['product.attribute.value'].search([('attribute_id', '=', att), ('name', '=', attv)])
+
             if not pav:
                 ctx = self.env.context.copy()
                 ctx.pop('active_id', False)
@@ -376,6 +377,7 @@ class ProductTemplate(models.Model):
             custom_values = {}
         valid = self.validate_configuration(value_ids, custom_values)
         if not valid:
+            print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
             raise ValidationError(_('Invalid Configuration'))
 
         duplicates = self.search_variant(value_ids,
