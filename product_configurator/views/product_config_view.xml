@@ -82,7 +82,7 @@
                         <field name="value" attrs="{'invisible': [('attachment_ids', '!=', [])]}"/>
                     </group>
                 </group>
-                <field name="attachment_ids" attrs="{'invisible': [('value', '!=', False)]}">
+                <field name="attachment_ids" attrs="{'invisible': [('value', '!=', False)]}" options="{'no_create': True, 'no_create_edit': True}">
                     <tree>
                         <field name="datas_fname"/>
                         <field name="datas"/>
@@ -99,7 +99,7 @@
             <tree string="Configuration Values" editable="bottom">
                 <field name="attribute_id" string="Attribute"/>
                 <field name="value"/>
-                <field name="attachment_ids" widget="many2many_tags"/>
+                <field name="attachment_ids" widget="many2many_tags" options="{'no_create': True, 'no_create_edit': True}"/>
             </tree>
         </field>
     </record>
@@ -139,7 +139,7 @@
                         <tree string="Custom Values" editable="bottom">
                             <field name="attribute_id"/>
                             <field name="value"/>
-                            <field name="attachment_ids" widget="many2many_tags"/>
+                            <field name="attachment_ids" widget="many2many_tags" options="{'no_create': True, 'no_create_edit': True}"/>
                         </tree>
                     </field>
                 </sheet>
