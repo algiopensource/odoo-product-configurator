@@ -524,7 +524,7 @@ class ProductTemplate(models.Model):
         custom_attr_ids = self.attribute_line_ids.filtered(
             'custom').mapped('attribute_id').ids
 
-        if not set(custom_vals.keys()) <= set(custom_attr_ids):
+        if not len(set(custom_vals.keys())) <= len(set(custom_attr_ids)):
             return False
 
         # Check if there are multiple values passed for non-multi attributes

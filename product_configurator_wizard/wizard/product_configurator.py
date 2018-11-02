@@ -600,8 +600,22 @@ class ProductConfigurator(models.TransientModel):
             })
             custom_vals = []
             for val in product.value_custom_ids:
+                val_attribute_id = val.attribute_id.id
+                product_attribute_line = self.env['product.attribute.line']
+                coincidence = product_attribute_line.search([('attribute_id', '=', val.attribute_id.id),
+                                                             ('product_tmpl_id','=',product.product_tmpl_id.id)])
+                # Se verifica que el sistema devuelve el attribute_id correcto, de no serlo se buscara el correcto
+                if not coincidence:
+                    product_attribute = self.env['product.attribute']
+                    attb_temp = product_attribute.with_context(lang='es_ES').browse(val_attribute_id)
+                    chance_attributes_ids = product_attribute.with_context(lang='es_ES').search([('name','=',attb_temp.name)]).ids
+                    for chance_attribute_id in chance_attributes_ids:
+                        if self.env['product.attribute.line'].search([('attribute_id','=',chance_attribute_id),
+                                                                      ('product_tmpl_id','=',product.product_tmpl_id.id)]):
+                            val_attribute_id = chance_attribute_id
+                            break
                 custom_vals.append((0, 0, {
-                    'attribute_id': val.attribute_id.id,
+                    'attribute_id': val_attribute_id,
                     'value': val.value,
                     'attachment_ids': [(6, 0, val.attachment_ids.ids)],
                 }))
