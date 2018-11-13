@@ -370,7 +370,7 @@ class ProductTemplate(models.Model):
 
             value_ids.append(pav.id)
 
-        #custom_values = {}
+        custom_values = {}
         ##############################################################################################################################
 
         if custom_values is None:
