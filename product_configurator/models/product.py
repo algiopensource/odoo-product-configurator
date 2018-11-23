@@ -350,6 +350,8 @@ class ProductTemplate(models.Model):
         for k, v in custom_values.items():
             att = k
             attv = v
+            pal = self.env['product.attribute.line'].search(
+                [('attribute_id', '=', att), ('product_tmpl_id', '=', self.id)])
             pav = self.env['product.attribute.value'].search([('attribute_id', '=', att), ('name', '=', attv)])
 
             if not pav:
@@ -361,12 +363,14 @@ class ProductTemplate(models.Model):
                                                                                     'attribute_code': attv})
                 pal = self.env['product.attribute.line'].search(
                     [('attribute_id', '=', att), ('product_tmpl_id', '=', self.id)])
-                pal.update({'value_ids': [4, pav.id]})
+                pal.update({'value_ids': [(4, pav.id)]})
             elif pav.attribute_code == '[]' and not attv == '[]':
                 pav.write({'attribute_code': attv})
                 pal = self.env['product.attribute.line'].search(
                     [('attribute_id', '=', att), ('product_tmpl_id', '=', self.id)])
-                pal.update({'value_ids': [4, pav.id]})
+                pal.update({'value_ids': [(4, pav.id)]})
+            elif pal.id not in pal.value_ids.ids:
+                pal.update({'value_ids': [(4, pav.id)]})
 
             value_ids.append(pav.id)
 
