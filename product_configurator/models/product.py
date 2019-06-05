@@ -353,6 +353,12 @@ class ProductTemplate(models.Model):
             pal = self.env['product.attribute.line'].search(
                 [('attribute_id', '=', att), ('product_tmpl_id', '=', self.id)])
             pav = self.env['product.attribute.value'].search([('attribute_id', '=', att), ('name', '=', attv)])
+            if len(pav)>1:
+                for pa in pav:
+                    if pa.attribute_code == attv:
+                        pav = pa
+                        break
+
 
             if not pav:
                 ctx = self.env.context.copy()
