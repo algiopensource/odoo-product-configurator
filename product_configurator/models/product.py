@@ -384,11 +384,8 @@ class ProductTemplate(models.Model):
 
         if custom_values is None:
             custom_values = {}
-        print value_ids
-        print custom_values
         valid = self.validate_configuration(value_ids, custom_values)
         if not valid:
-            print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
             raise ValidationError(_('Invalid Configuration'))
 
         duplicates = self.search_variant(value_ids,
