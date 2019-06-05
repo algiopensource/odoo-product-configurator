@@ -358,9 +358,14 @@ class ProductTemplate(models.Model):
                 ctx = self.env.context.copy()
                 ctx.pop('active_id', False)
                 ctx.pop('active_ids', False)
-                pav = self.env['product.attribute.value'].with_context(ctx).create({'attribute_id': att,
-                                                                                    'name': attv,
-                                                                                    'attribute_code': attv})
+                pav = self.env['product.attribute.value'].with_context(ctx).search([('attribute_id','=', att),
+                                                                                    ('attribute_code','=', attv)], limit=1)
+                if len(pav) == 0:
+                    pav = self.env['product.attribute.value'].with_context(ctx).create({'attribute_id': att,
+                                                                                        'name': attv,
+                                                                                        'attribute_code': attv})
+                else:
+                    pav = pav[0]
                 pal = self.env['product.attribute.line'].search(
                     [('attribute_id', '=', att), ('product_tmpl_id', '=', self.id)])
                 pal.update({'value_ids': [(4, pav.id)]})
@@ -379,6 +384,8 @@ class ProductTemplate(models.Model):
 
         if custom_values is None:
             custom_values = {}
+        print value_ids
+        print custom_values
         valid = self.validate_configuration(value_ids, custom_values)
         if not valid:
             print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
