@@ -267,12 +267,21 @@ class ProductTemplate(models.Model):
         # TODO: Also consider custom values for image change
         img_obj = self
         max_matches = 0
+        max_matches_fails = 0
         value_ids = self.flatten_val_ids(value_ids)
-        for line in self.config_image_ids:
+        for line in self.config_image_ids.sorted(lambda r: r.sequence):
             matches = len(set(line.value_ids.ids) & set(value_ids))
+            matches_fails = len(line.value_ids.ids) - matches
             if matches > max_matches:
                 img_obj = line
                 max_matches = matches
+                max_matches_fails = matches_fails
+            elif matches == max_matches and max_matches_fails > matches_fails:
+                img_obj = line
+                max_matches = matches
+                max_matches_fails = matches_fails
+            elif matches == max_matches and max_matches_fails == matches_fails:
+                img_obj = self
         return img_obj
 
     @api.multi
